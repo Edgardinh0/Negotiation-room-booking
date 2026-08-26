@@ -1,6 +1,9 @@
+import { useWebSocket } from "@/hooks/useWebSocket";
 import { NavLink, Outlet } from "react-router-dom";
 
 function MainLayout() {
+    useWebSocket()
+    
     return(
         <div>
             <header>
