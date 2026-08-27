@@ -1,0 +1,47 @@
+main {
+    padding: 0 2.5rem 2.5rem 2.5rem;
+    background-color: var(--bg);
+    flex: 1;
+    display: flex;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px 0 40px;
+    border-bottom: 1px solid #E2E8F0;
+}
+
+.app-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px
+}
+
+.nav-links {
+    display: flex;
+    gap: 32px;
+}
+
+.nav-link {
+    display: flex;
+    color: var(--text);
+    font-weight: 500;
+    text-decoration: none;
+    align-items: center;
+    cursor: pointer;
+    height: 72px;
+}
+
+.nav-link.active {
+    color: var(--green);
+    border-bottom: 2px solid var(--green)
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
+}

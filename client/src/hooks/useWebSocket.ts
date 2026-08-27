@@ -5,8 +5,9 @@ export const useWebSocket = () => {
     const queryClient = useQueryClient()
     
     useEffect(() => {
-        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws'
-        const wsUrl = `${protocol}//${window.location.host}/api/v1/ws`
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const host = window.location.host;
+        const wsUrl = `${protocol}//${host}/api/v1/ws`;
         
         const socket = new WebSocket(wsUrl)
 
