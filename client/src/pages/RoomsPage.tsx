@@ -95,10 +95,12 @@ function RoomsPage() {
 
         {/* 3. Идет загрузка списка комнат */}
         {isOfficeSelected && !isRoomsError && isRoomsLoading && (
-          <div className="room-cards-grid">
-            {Array.from({ length: 4 }).map((_, index) => (
-              <RoomSkeleton key={index} />
-            ))}
+          <div className="loaded-rooms">
+            <div className="room-cards-grid">
+                {Array.from({ length: 4 }).map((_, index) => (
+                <RoomSkeleton key={index} />
+                ))}
+            </div>
           </div>
         )}
 
