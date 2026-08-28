@@ -6,7 +6,7 @@ function MainLayout() {
     useWebSocket()
     
     return(
-        <div style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
+        <div style={{minHeight: '100vh', minWidth: '100vw', display: 'flex', flexDirection: 'column'}}>
             <header>
                 <div className="app-brand">
                     <img style={{height: '36px', width: '36px'}} src="/logo-icon.jpg" alt='app-icon'></img>
