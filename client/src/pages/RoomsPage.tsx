@@ -19,8 +19,10 @@ function RoomsPage() {
 
   const isOfficeSelected = Boolean(selectedOfficeId);
 
+  const [filtersKey, setFiltersKey] = useState<number>(0)
+
   // 1. Загрузка офисов
-  const { data: offices = [], isLoading: isOfficesLoading } = useOffices();
+  const { data: offices = [] } = useOffices();
 
   // 2. Загрузка комнат (выполняется только при наличии selectedOfficeId)
   const {
@@ -61,6 +63,13 @@ function RoomsPage() {
     }
   };
 
+  const handleResetFilters = () => {
+    setMinCapacity(undefined)
+    setFrom(undefined)
+    setTo(undefined)
+    setFiltersKey(prev => prev + 1)
+  }
+
   return (
     <div className="rooms-page">
       <OfficeSelector
@@ -70,6 +79,7 @@ function RoomsPage() {
       />
 
       <RoomsFilters
+        key={filtersKey}
         isDisabled={!isOfficeSelected}
         onFilterChange={handleFilterChange}
       />
@@ -94,7 +104,7 @@ function RoomsPage() {
 
         {/* 4. Пустой результат */}
         {isOfficeSelected && !isRoomsError && !isRoomsLoading && rooms.length === 0 && (
-          <EmptyRoomsState />
+          <EmptyRoomsState onResetFilters={handleResetFilters}/>
         )}
 
         {/* 5. Загруженный список переговорных */}
