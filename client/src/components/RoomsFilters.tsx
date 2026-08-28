@@ -76,11 +76,6 @@ function RoomsFilters({isDisabled, onFilterChange}: BookingFiltersProps) {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
     
-    // const formatDateLabel = (date: Date) => {
-    // const months = ['Января', 'Февраля', 'Марта', 'Апреля', 'Мая', 'Июня', 'Июля', 'Августа', 'Сентября', 'Октября', 'Ноября', 'Декабря'];
-    // const days = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
-    // return `${date.getDate()} ${months[date.getMonth()]}, ${days[date.getDay()]}`;
-
   return (
     <div className={`booking-filters ${isDisabled ? 'disabled' : ''}`} ref={containerRef}>
       
@@ -127,7 +122,6 @@ function RoomsFilters({isDisabled, onFilterChange}: BookingFiltersProps) {
             className="time-input"
           />
         </div>
-        <span className="filter-subtext">Маска ввода: только цифры, автоподстановка «:»</span>
       </div>
 
       {/* 3. ДЛИТЕЛЬНОСТЬ */}
@@ -164,7 +158,6 @@ function RoomsFilters({isDisabled, onFilterChange}: BookingFiltersProps) {
             ))}
           </ul>
         )}
-        <span className="filter-subtext">Шаг: 15 минут. Мин: 15 мин, Макс: ограничен рабочими часами (до 20:00)</span>
       </div>
 
       {/* 4. ВМЕСТИМОСТЬ */}
