@@ -1,10 +1,13 @@
 import { useWebSocket } from "@/hooks/useWebSocket";
 import { NavLink, Outlet } from "react-router-dom";
+import { useUser } from "@/hooks/useUser";
 import '@/styles/mainlayout.css'
 
 function MainLayout() {
     useWebSocket()
     
+    const { data: user} = useUser();
+
     return(
         <div style={{minHeight: '100vh', minWidth: '100vw', display: 'flex', flexDirection: 'column'}}>
             <header>
@@ -17,8 +20,11 @@ function MainLayout() {
                     <NavLink className='nav-link' to='/bookings'>Мои бронирования</NavLink>
                 </div>
                 <div className="profile">
-                    <span >placeholder name</span>
-                    <img style={{height: '40px', width: '40px', borderRadius: '20px'}} alt="avatar"></img>
+                    <span >{user?.displayName}</span>
+                    <div className="profile-icon">
+                        <span className="profile-icon-initials">{user?.initials}</span>
+                    </div>
+                    {/* <img style={{height: '40px', width: '40px', borderRadius: '20px'}} alt="avatar"></img> */}
                 </div>
             </header>
 

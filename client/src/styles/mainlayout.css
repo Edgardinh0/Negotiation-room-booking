@@ -45,3 +45,18 @@ header {
     gap: 12px;
     font-weight: 600;
 }
+
+.profile-icon {
+    background-color: #5478D9;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.profile-icon-initials {
+    color: #FFF;
+    font-weight: 600;
+}

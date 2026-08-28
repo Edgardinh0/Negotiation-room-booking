@@ -1,7 +1,11 @@
 import { request } from "./client";
-import type { Office, Room, Booking, CreateBookingPayload } from "@/types/api";
+import type { Office, Room, Booking, CreateBookingPayload, User } from "@/types/api";
 
 export const api = {
+    
+    //Получиь пользователя
+    getUser: async() => await request<User>('/me'),
+
     //Получить офисы
     getOffices: async() => {
         const res = await request<{items: Office[]}>('/offices')
