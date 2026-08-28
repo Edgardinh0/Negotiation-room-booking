@@ -10,9 +10,8 @@ interface RoomCardProps {
   onBookClick?: (id: string) => void;
 }
 
-export function RoomCard({ room, available = true, statusText = 'Свободна весь день', onDetailClick, onBookClick }: RoomCardProps) {
+export function RoomCard({ room, statusText = 'Свободна весь день', onDetailClick, onBookClick }: RoomCardProps) {
     
-    const isAvailable = room.available ?? available
     const status = room.statusText ?? statusText
   
     return (
@@ -33,7 +32,7 @@ export function RoomCard({ room, available = true, statusText = 'Свободн�
         </div>
       </div>
 
-      <div className={`status-badge ${isAvailable ? 'available' : 'unavailable'}`}>
+      <div className={`status-badge ${room.available ? 'available' : 'unavailable'}`}>
         <span className="status-dot" />
         {room.available ? 'Доступно на выбранное время' : 'Недоступно на выбранное время'}
       </div>
