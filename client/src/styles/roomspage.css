@@ -1,0 +1,19 @@
+.main-content {
+    padding: 1.5rem 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loaded-rooms {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.room-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 1.5rem;
+
+}

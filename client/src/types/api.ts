@@ -21,8 +21,9 @@ export interface Room {
     floor: number,
     capacity: number,
     features: Array<{code: string, name: string}>
-    office: Office,
-    available: boolean
+    office?: Office,
+    available?: boolean,
+    statusText?: string
 }
 
 export interface CreateBookingPayload {

@@ -131,6 +131,22 @@
   color: #027A48;
 }
 
+.input-trigger.input-error {
+  border-color: #EF4444 !important;
+}
+
+.filter-error-text {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #EF4444;
+  font-size: 0.75rem;
+  margin-top: 4px;
+  position: absolute;
+  bottom: -20px;
+  white-space: nowrap;
+}
+
 .custom-datepicker-input {
   border: none;
   outline: none;

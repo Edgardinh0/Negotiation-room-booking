@@ -3,24 +3,18 @@ import '@/styles/officeselector.css';
 import { IoChevronDown } from 'react-icons/io5';
 import type { Office } from '@/types/api';
 
-
-const OFFICES: Office[] = [
-  { id: '1', name: 'Офис 1', address: 'ул. Ленина, 10', timezone: '14:30' },
-  { id: '2', name: 'Офис 2', address: 'пр. Мира, 42', timezone: '15:30' },
-  { id: '3', name: 'Офис 3', address: 'наб. Реки, 5', timezone: '12:30' },
-];
-
 interface OfficeSelectorProps {
+  offices: Office[]
   selectedOfficeId: string;
   onSelectOffice: (id: string) => void;
 }
 
-function OfficeSelector({selectedOfficeId, onSelectOffice}: OfficeSelectorProps) {
+function OfficeSelector({selectedOfficeId, onSelectOffice, offices}: OfficeSelectorProps) {
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const selectedOffice = OFFICES.find((o) => o.id === selectedOfficeId);
+  const selectedOffice = offices.find((o) => o.id === selectedOfficeId);
 
   // Закрытие при клике снаружи элемента
   useEffect(() => {
@@ -53,7 +47,7 @@ function OfficeSelector({selectedOfficeId, onSelectOffice}: OfficeSelectorProps)
 
           {isOpen && (
             <ul className="custom-select-options">
-              {OFFICES.map((office) => (
+              {offices.map((office) => (
                 <li
                   key={office.id}
                   className={`option-item ${selectedOfficeId === office.id ? 'active' : ''}`}

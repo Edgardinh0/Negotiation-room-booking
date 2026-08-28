@@ -1,21 +1,19 @@
 import { useState, useRef, useEffect } from "react";
-import DatePicker, { registerLocale } from 'react-datepicker'
-import { LuClock } from "react-icons/lu";
+import DatePicker, { registerLocale } from 'react-datepicker';
+import { LuClock, LuCalendar, LuUsers, LuCheck, LuLoaderCircle } from "react-icons/lu";
 import { IoChevronDown } from "react-icons/io5";
-import { LuCalendar } from "react-icons/lu";
-import { LuUsers } from "react-icons/lu";
-import { LuCheck } from "react-icons/lu";
-import '@/styles/roomfilters.css'
-import 'react-datepicker/dist/react-datepicker.css'
+import '@/styles/roomfilters.css';
+import 'react-datepicker/dist/react-datepicker.css';
 import { ru } from "date-fns/locale/ru";
 
 export interface FilterState {
-        date: Date;
-        startTime: String;
-        duration: Number;
-        capacity: Number;
-    }
-    
+  date: Date | null;
+  startTime: string;
+  duration: number;
+  capacity: number;
+  isValidTime?: boolean;
+}
+
 interface BookingFiltersProps {
   isDisabled?: boolean;
   onFilterChange?: (filters: FilterState) => void;
@@ -33,60 +31,113 @@ const DURATION_OPTIONS = [
 ];
 
 const CAPACITY_OPTIONS = [2, 4, 6, 8, 10, 12];
+const MAX_END_HOUR = 20; // 20:00 - крайний срок окончания бронирования
 
-registerLocale('ru', ru)
+registerLocale('ru', ru);
 
-function RoomsFilters({isDisabled, onFilterChange}: BookingFiltersProps) {
-    const [selectedDate, setSelectedDate] = useState<Date | null>(new Date())
-    const [startTime, setStartTime] = useState<string>('')
-    const [duration, setDuration] = useState<number>(60)
-    const [capacity, setCapacity] = useState<number>(4)
+function RoomsFilters({ isDisabled, onFilterChange }: BookingFiltersProps) {
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  const [startTime, setStartTime] = useState<string>('');
+  const [duration, setDuration] = useState<number>(60);
+  const [capacity, setCapacity] = useState<number>(4);
+  const [timeError, setTimeError] = useState<string | null>(null);
 
-    //Состояние выпадающих окон
-    const [isDatePickerOpen, setIsDatePickerOpen] = useState(false)
-    const [isDurationOpen, setIsDurationOpen] = useState(false)
-    const [isCapacityOpen, setIsCapacityOpen] = useState(false)
+  const [isDurationOpen, setIsDurationOpen] = useState(false);
+  const [isCapacityOpen, setIsCapacityOpen] = useState(false);
 
-    const today = new Date()
-    const maxDate = new Date()
-    maxDate.setDate(today.getDate() + 30)
+  const today = new Date();
+  const maxDate = new Date();
+  maxDate.setDate(today.getDate() + 30);
 
-    const containerRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null);
 
-    // Маска ввода времени (HH:MM)
-    const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let value = e.target.value.replace(/\D/g, '');
-        if (value.length > 4) value = value.slice(0, 4);
+  // Валидация: бронирование должно завершиться до 20:00
+  const validateTime = (timeStr: string, dur: number): boolean => {
+    if (timeStr.length < 5) {
+      setTimeError(null);
+      return true;
+    }
 
-        if (value.length >= 3) {
-        value = `${value.slice(0, 2)}:${value.slice(2)}`;
-        }
-        setStartTime(value);
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    const startInMinutes = hours * 60 + minutes;
+    const endInMinutes = startInMinutes + dur;
+    const maxInMinutes = MAX_END_HOUR * 60; // 20:00 -> 1200 минут
+
+    if (hours >= 20 || endInMinutes > maxInMinutes) {
+      setTimeError(`Бронирование доступно до ${MAX_END_HOUR}:00`);
+      return false;
+    }
+
+    setTimeError(null);
+    return true;
+  };
+
+  const updateFilters = (
+    newDate: Date | null,
+    newTime: string,
+    newDuration: number,
+    newCapacity: number
+  ) => {
+    const isValid = validateTime(newTime, newDuration);
+    onFilterChange?.({
+      date: newDate,
+      startTime: newTime,
+      duration: newDuration,
+      capacity: newCapacity,
+      isValidTime: isValid,
+    });
+  };
+
+  const handleDateChange = (date: Date | null) => {
+    setSelectedDate(date);
+    updateFilters(date, startTime, duration, capacity);
+  };
+
+  const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length > 4) value = value.slice(0, 4);
+
+    if (value.length >= 3) {
+      value = `${value.slice(0, 2)}:${value.slice(2)}`;
+    }
+
+    setStartTime(value);
+    updateFilters(selectedDate, value, duration, capacity);
+  };
+
+  const handleDurationSelect = (val: number) => {
+    setDuration(val);
+    setIsDurationOpen(false);
+    updateFilters(selectedDate, startTime, val, capacity);
+  };
+
+  const handleCapacitySelect = (val: number) => {
+    setCapacity(val);
+    setIsCapacityOpen(false);
+    updateFilters(selectedDate, startTime, duration, val);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setIsDurationOpen(false);
+        setIsCapacityOpen(false);
+      }
     };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
-    useEffect(() => {
-        const handleClickOutside = (e: MouseEvent) => {
-        if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-            setIsDatePickerOpen(false);
-            setIsDurationOpen(false);
-            setIsCapacityOpen(false);
-        }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
-    
   return (
     <div className={`booking-filters ${isDisabled ? 'disabled' : ''}`} ref={containerRef}>
-      
       {/* 1. ДАТА */}
       <div className="filter-item">
         <label className="filter-label">ДАТА</label>
         <div className="filter-trigger date-picker-wrapper">
           <LuCalendar className="filter-icon" />
-          <DatePicker 
+          <DatePicker
             selected={selectedDate}
-            onChange={(date: Date | null) => setSelectedDate(date)}
+            onChange={handleDateChange}
             dateFormat="d MMMM, EE"
             locale="ru"
             minDate={today}
@@ -96,21 +147,12 @@ function RoomsFilters({isDisabled, onFilterChange}: BookingFiltersProps) {
             className="custom-datepicker-input"
           />
         </div>
-
-        {isDatePickerOpen && (
-          <div className="dropdown-popover date-picker-popover">
-            <div className="calendar-placeholder-header">
-              <strong>Октябрь 2024</strong>
-            </div>
-            <div className="filter-hint">Ограничение: не более 30 дней вперёд. Даты за пределами лимита неактивны.</div>
-          </div>
-        )}
       </div>
 
       {/* 2. ВРЕМЯ НАЧАЛА */}
       <div className="filter-item">
         <label className="filter-label">ВРЕМЯ НАЧАЛА</label>
-        <div className="filter-trigger input-trigger">
+        <div className={`filter-trigger input-trigger ${timeError ? 'input-error' : ''}`}>
           <LuClock className="filter-icon" />
           <input
             type="text"
@@ -122,6 +164,11 @@ function RoomsFilters({isDisabled, onFilterChange}: BookingFiltersProps) {
             className="time-input"
           />
         </div>
+        {timeError && (
+          <div className="filter-error-text">
+            <LuLoaderCircle /> {timeError}
+          </div>
+        )}
       </div>
 
       {/* 3. ДЛИТЕЛЬНОСТЬ */}
@@ -133,7 +180,6 @@ function RoomsFilters({isDisabled, onFilterChange}: BookingFiltersProps) {
           className="filter-trigger"
           onClick={() => {
             setIsDurationOpen(!isDurationOpen);
-            setIsDatePickerOpen(false);
             setIsCapacityOpen(false);
           }}
         >
@@ -147,10 +193,7 @@ function RoomsFilters({isDisabled, onFilterChange}: BookingFiltersProps) {
               <li
                 key={opt.value}
                 className={`option-row ${duration === opt.value ? 'selected' : ''}`}
-                onClick={() => {
-                  setDuration(opt.value);
-                  setIsDurationOpen(false);
-                }}
+                onClick={() => handleDurationSelect(opt.value)}
               >
                 <span>{opt.label}</span>
                 {duration === opt.value && <LuCheck className="check-icon" />}
@@ -169,7 +212,6 @@ function RoomsFilters({isDisabled, onFilterChange}: BookingFiltersProps) {
           className="filter-trigger"
           onClick={() => {
             setIsCapacityOpen(!isCapacityOpen);
-            setIsDatePickerOpen(false);
             setIsDurationOpen(false);
           }}
         >
@@ -184,10 +226,7 @@ function RoomsFilters({isDisabled, onFilterChange}: BookingFiltersProps) {
               <li
                 key={cap}
                 className={`option-row ${capacity === cap ? 'selected' : ''}`}
-                onClick={() => {
-                  setCapacity(cap);
-                  setIsCapacityOpen(false);
-                }}
+                onClick={() => handleCapacitySelect(cap)}
               >
                 <span>{cap} чел.</span>
                 {capacity === cap && <LuCheck className="check-icon" />}
@@ -196,9 +235,8 @@ function RoomsFilters({isDisabled, onFilterChange}: BookingFiltersProps) {
           </ul>
         )}
       </div>
-
     </div>
   );
 }
 
-export default RoomsFilters
+export default RoomsFilters;

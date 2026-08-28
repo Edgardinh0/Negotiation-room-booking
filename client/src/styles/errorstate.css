@@ -1,0 +1,54 @@
+.error-state-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5rem 1rem;
+  text-align: center;
+  width: 100%;
+}
+
+.error-icon-circle {
+  width: 80px;
+  height: 80px;
+  background-color: #FEE2E2; /* Светло-красный круг */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+}
+
+.error-icon {
+  font-size: 2.2rem;
+  color: #EF4444; /* Красная иконка */
+}
+
+.error-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1A202C;
+  margin: 0 0 0.5rem 0;
+}
+
+.error-subtitle {
+  font-size: 0.9rem;
+  color: #718096;
+  margin: 0 0 1.5rem 0;
+}
+
+.btn-retry {
+  background-color: var(--green, #0D9488);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  padding: 0.65rem 1.25rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.btn-retry:hover {
+  opacity: 0.9;
+}
