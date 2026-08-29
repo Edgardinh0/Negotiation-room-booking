@@ -24,7 +24,6 @@ function MainLayout() {
                     <div className="profile-icon">
                         <span className="profile-icon-initials">{user?.initials}</span>
                     </div>
-                    {/* <img style={{height: '40px', width: '40px', borderRadius: '20px'}} alt="avatar"></img> */}
                 </div>
             </header>
 

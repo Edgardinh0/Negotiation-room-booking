@@ -27,8 +27,8 @@ export const api = {
     getRoomById: (roomId: string) => request<Room>(`/rooms/${roomId}`),
 
     //РАсписание комнаты
-    getRoomBookings: async (roomId: string, from: string, to: string) => {
-        const res = await request<{items: Booking[]}>(`/rooms/${roomId}/bookings?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`)
+    getRoomBookings: async (params: {roomId: string, from: string, to: string}) => {
+        const res = await request<{items: Booking[]}>(`/rooms/${params.roomId}/bookings?from=${encodeURIComponent(params.from)}&to=${encodeURIComponent(params.to)}`)
         return res.items
     },
 

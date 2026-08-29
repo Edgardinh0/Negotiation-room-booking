@@ -1,0 +1,69 @@
+.schedule-error-card {
+  width: 100%;
+  min-height: 480px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  text-align: center;
+}
+
+/* Розовый круг под иконкой */
+.schedule-error-icon-wrapper {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background-color: #fde8e8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+/* Красная иконка */
+.schedule-error-icon {
+  font-size: 40px;
+  color: #e53e3e;
+}
+
+/* Заголовок */
+.schedule-error-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 8px 0;
+}
+
+/* Подзаголовок / Описание */
+.schedule-error-description {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0 0 24px 0;
+  max-width: 320px;
+  line-height: 1.4;
+}
+
+/* Кнопка "Попробовать снова" */
+.schedule-error-retry-btn {
+  background-color: #0d9488;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.schedule-error-retry-btn:hover {
+  background-color: #0f766e;
+}
+
+.schedule-error-retry-btn:active {
+  background-color: #115e59;
+}

@@ -1,73 +1,126 @@
-import { useParams } from "react-router-dom"
-import { useRoomDetails } from "@/hooks/userRoomDetails"
-import { RoomSchedule } from "@/components/RoomSchedule"
-import RoomDetailCard from "@/components/RoomDetailCard"
-import { useState } from "react"
-import { RoomDetailSkeleton } from "@/components/RoomDetailSkeleton"
-import type { BookingSlot } from "@/components/RoomSchedule"
-import '@/styles/roomdetail.css'
+import { useState } from "react";
+import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/api/service";
+import { useRoomDetails } from "@/hooks/useRoomDetails";
+import { useRoomBookings } from "@/hooks/useRoomBookings";
 
-function RoomDetailsPage () {
-    const {roomId} = useParams<{ roomId: string}>()
-    const [selectedDate, setSelectedDate] = useState<Date>(new Date())
+import RoomDetailCard from "@/components/RoomDetailCard";
+import { RoomSchedule } from "@/components/RoomSchedule";
+import { RoomDetailSkeleton } from "@/components/RoomDetailSkeleton";
+import { ScheduleErrorState } from "@/components/ScheduleErrorState";
+import { CreateBookingModal } from "@/components/CreateBookingModal";
 
-    const { data: room, isLoading, isError } = useRoomDetails(roomId!)
+import "@/styles/roomdetail.css";
 
-    const handleBookClick = () => {
-        console.log("Открыть модалку бронирования");
-    };
+function RoomDetailsPage() {
+  const { roomId } = useParams<{ roomId: string }>();
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
-    const MOCK_BOOKINGS: BookingSlot[] = [
-    {
-        id: "1",
-        title: "Daily Sync / Команда разработки",
-        startTime: "11:00",
-        endTime: "12:00",
-        isMine: true,
-    },
-    {
-        id: "2",
-        startTime: "15:00",
-        endTime: "16:00",
-        isMine: false,
-    },
-    ];
+  // 1. Данные о комнате
+  const {
+    data: room,
+    isLoading: isRoomLoading,
+    isError: isRoomError,
+    refetch: refetchRoom,
+  } = useRoomDetails(roomId!);
 
-    console.log(room)
+  // 2. Текущий пользователь
+  const { data: currentUser } = useQuery({
+    queryKey: ["currentUser"],
+    queryFn: () => api.getUser(),
+  });
 
-    if (isLoading) {
-        return <RoomDetailSkeleton />
-    }
+  // 3. Вычисление границ суток в UTC / ISO
+  const startOfDay = new Date(selectedDate);
+  startOfDay.setHours(0, 0, 0, 0);
 
-    if (room) {
-        return (    
-            <div className="room-detail-page">
-                <nav className="breadcrumbs">
-                    <span>Переговорные</span>
-                    <span className="separator"></span>
-                    <span>{room!.office!.name}</span>
-                    <span className="separator"></span>
-                    <span className="active">Комната {room.name}</span>
-                </nav>
+  const endOfDay = new Date(selectedDate);
+  endOfDay.setHours(23, 59, 59, 999);
 
-                <div className="room-detail-content">
-                    <aside className="room-sidebar">
-                        <RoomDetailCard room={room}/>
-                    </aside>
+  // 4. Запрос бронирований
+  const {
+    data: bookings = [],
+    isLoading: isBookingsLoading,
+    isError: isBookingsError,
+    refetch: refetchBookings,
+  } = useRoomBookings({
+    roomId,
+    from: startOfDay.toISOString(),
+    to: endOfDay.toISOString(),
+    currentUserId: currentUser?.id,
+  });
 
-                    <main className="room-main">
-                        <RoomSchedule
-                            selectedDate={selectedDate}
-                            onDateChange={(date) => date && setSelectedDate(date)}
-                            bookings={MOCK_BOOKINGS}
-                            onBookClick={handleBookClick}
-                        />
-                    </main>
-                </div>
-                
-            </div>
-        )
-    }
+  const handleBookClick = () => {
+    console.log("Открыть модалку бронирования");
+  };
+
+  // 5. Загрузка данных комнаты
+  if (isRoomLoading) {
+    return <RoomDetailSkeleton />;
+  }
+
+  // 6. Ошибка загрузки самой комнаты
+  if (isRoomError || !room) {
+    return (
+      <div className="room-detail-page">
+        <div className="room-detail-container">
+          <ScheduleErrorState
+            title="Не удалось загрузить данные о комнате"
+            description="Произошла ошибка при загрузке информации о переговорной"
+            onRetry={() => refetchRoom()}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // 7. Полноценный рендер
+  return (
+    <div className="room-detail-page">
+      <nav className="breadcrumbs">
+        <span>Переговорные</span>
+        <span className="separator">›</span>
+        <span>{room.office?.name || "Офис"}</span>
+        <span className="separator">›</span>
+        <span className="active">Комната {room.name}</span>
+      </nav>
+
+      <div className="room-detail-content">
+        <aside className="room-sidebar">
+          <RoomDetailCard room={room} />
+        </aside>
+
+        <main className="room-main">
+          {isBookingsError ? (
+            <ScheduleErrorState
+              title="Не удалось загрузить расписание"
+              description="Произошла ошибка при загрузке расписания переговорной"
+              onRetry={() => refetchBookings()}
+            />
+          ) : (
+            <RoomSchedule
+              selectedDate={selectedDate}
+              onDateChange={(date) => date && setSelectedDate(date)}
+              bookings={bookings}
+              isLoading={isBookingsLoading}
+              onBookClick={() => setIsModalOpen(true)}
+            />
+          )}
+        </main>
+
+        {room && (
+            <CreateBookingModal
+                room={room}
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                defaultDate={selectedDate}
+            />
+        )}
+      </div>
+    </div>
+  );
 }
 
-export default RoomDetailsPage
+export default RoomDetailsPage;
