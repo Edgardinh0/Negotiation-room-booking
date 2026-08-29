@@ -34,7 +34,17 @@ export const useWebSocket = () => {
             console.log('WebSocket close its connection')
         }
 
-        return () => socket.close()
+        
+        return () => {
+            socket.onopen = null
+            socket.onmessage = null
+            socket.onerror = null
+            socket.onclose = null
+
+            if (socket.readyState === WebSocket.CONNECTING || socket.readyState === WebSocket.OPEN) {
+                socket.close()
+            }
+        }
+       
     }, [queryClient])
-   
 }

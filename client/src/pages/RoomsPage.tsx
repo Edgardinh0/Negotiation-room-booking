@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import OfficeSelector from "@/components/OfficeSelector";
 import RoomsFilters from "@/components/RoomsFilters";
 import NoOfficeSelected from "@/components/NoOfficeSelected";
@@ -18,6 +19,8 @@ function RoomsPage() {
   const [to, setTo] = useState<string | undefined>();
 
   const isOfficeSelected = Boolean(selectedOfficeId);
+
+  const navigate = useNavigate()
 
   const [filtersKey, setFiltersKey] = useState<number>(0)
 
@@ -70,6 +73,10 @@ function RoomsPage() {
     setFiltersKey(prev => prev + 1)
   }
 
+  const handleDeatilsClick = (id: string) => {
+    navigate(`/rooms/${id}`)
+  }
+
   return (
     <div className="rooms-page">
       <OfficeSelector
@@ -119,7 +126,7 @@ function RoomsPage() {
                   key={room.id}
                   room={room}
                   onBookClick={(id) => console.log('Book room:', id)}
-                  onDetailClick={(id) => console.log('Details for:', id)}
+                  onDetailClick={(id) => handleDeatilsClick(id)}
                 />
               ))}
             </div>

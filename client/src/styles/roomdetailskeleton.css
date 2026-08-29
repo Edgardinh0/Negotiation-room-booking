@@ -1,0 +1,153 @@
+@keyframes skeleton-pulse {
+  0% {
+    background-color: #e2e8f0;
+  }
+  50% {
+    background-color: #cbd5e1;
+  }
+  100% {
+    background-color: #e2e8f0;
+  }
+}
+
+.skeleton-box {
+  animation: skeleton-pulse 1.5s infinite ease-in-out;
+  border-radius: 6px;
+}
+
+.skeleton-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.skeleton-crumb {
+  width: 90px;
+  height: 16px;
+}
+
+.skeleton-crumb-long {
+  width: 140px;
+  height: 16px;
+}
+
+.skeleton-sep {
+  color: #cbd5e1;
+}
+
+/* Левая карточка */
+.skeleton-card {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  padding: 24px;
+}
+
+.skeleton-title {
+  width: 60%;
+  height: 28px;
+  margin-bottom: 12px;
+}
+
+.skeleton-subtitle {
+  width: 85%;
+  height: 16px;
+  margin-bottom: 20px;
+}
+
+.skeleton-divider {
+  height: 1px;
+  background-color: #f1f5f9;
+  margin-bottom: 20px;
+}
+
+.skeleton-amenities {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.skeleton-amenity-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.skeleton-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+}
+
+.skeleton-text {
+  width: 75%;
+  height: 16px;
+}
+
+/* Правая карточка расписания */
+.skeleton-schedule-card {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  padding: 28px;
+}
+
+.skeleton-schedule-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+}
+
+.skeleton-sch-title {
+  width: 180px;
+  height: 24px;
+  margin-bottom: 8px;
+}
+
+.skeleton-sch-subtitle {
+  width: 120px;
+  height: 16px;
+}
+
+.skeleton-date-btn {
+  width: 130px;
+  height: 38px;
+  border-radius: 10px;
+}
+
+.skeleton-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  margin-bottom: 32px;
+}
+
+.skeleton-timeline-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.skeleton-hour {
+  width: 40px;
+  height: 14px;
+}
+
+.skeleton-line {
+  flex: 1;
+  height: 1px;
+  background-color: #f1f5f9;
+}
+
+.skeleton-schedule-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.skeleton-submit-btn {
+  width: 200px;
+  height: 44px;
+  border-radius: 10px;
+}
