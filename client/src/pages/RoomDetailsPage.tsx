@@ -54,10 +54,6 @@ function RoomDetailsPage() {
     currentUserId: currentUser?.id,
   });
 
-  const handleBookClick = () => {
-    console.log("Открыть модалку бронирования");
-  };
-
   // 5. Загрузка данных комнаты
   if (isRoomLoading) {
     return <RoomDetailSkeleton />;
