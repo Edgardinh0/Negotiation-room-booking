@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/api/service";
 import { useRoomDetails } from "@/hooks/useRoomDetails";
@@ -17,6 +17,8 @@ function RoomDetailsPage() {
   const { roomId } = useParams<{ roomId: string }>();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const navigate = useNavigate()
 
   // 1. Данные о комнате
   const {
@@ -80,9 +82,9 @@ function RoomDetailsPage() {
   return (
     <div className="room-detail-page">
       <nav className="breadcrumbs">
-        <span>Переговорные</span>
+        <span onClick={() => navigate('/')} style={{cursor: 'pointer'}}>Переговорные</span>
         <span className="separator">›</span>
-        <span>{room.office?.name || "Офис"}</span>
+        <span onClick={() => navigate('/')} style={{cursor: 'pointer'}}>{room.office?.name || "Офис"}</span>
         <span className="separator">›</span>
         <span className="active">Комната {room.name}</span>
       </nav>
