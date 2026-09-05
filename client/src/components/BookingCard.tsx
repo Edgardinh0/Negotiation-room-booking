@@ -27,7 +27,7 @@ export default function BookingCard({ booking, isPast = false, onCancelClick }: 
       <div className="booking-card-details-content">
         <h3 className="booking-card-title">{booking.title || 'Без названия'}</h3>
         <div className="booking-card-meta">
-          <span>{booking.office?.name || booking.room?.office?.name}</span>
+          <span>{booking.room.name}</span>
           <span className="booking-card-dot">•</span>
           <span>{booking.room?.floor} этаж</span>
           <span className="booking-card-dot">•</span>

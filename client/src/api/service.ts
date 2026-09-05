@@ -48,6 +48,7 @@ export const api = {
     
     cancelBooking: (bookingId: string) => 
         request<void>(`/bookings/${bookingId}`,{
-            method: 'DELETE'
+            method: 'DELETE',
+            body: JSON.stringify({})
         }),
 }

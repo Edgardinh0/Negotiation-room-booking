@@ -1,17 +1,19 @@
 import { useState, useRef, useEffect } from 'react';
 import { IoChevronDown } from 'react-icons/io5';
 import type { Office } from '@/types/api';
+import { useOffices } from '@/hooks/useOffices';
 import '@/styles/bookingofficeselector.css';
 
 interface OfficeSelectProps {
-  offices: Office[];
   selectedOfficeId: string;
   onSelect: (officeId: string) => void;
 }
 
-export function BookingOfficeSelector({ offices, selectedOfficeId, onSelect }: OfficeSelectProps) {
+export function BookingOfficeSelector({ selectedOfficeId, onSelect }: OfficeSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const { data: offices = [] } = useOffices()
 
   const selectedOffice = offices.find((o) => o.id === selectedOfficeId);
 

@@ -3,73 +3,85 @@ import { BookingOfficeSelector } from '@/components/BookingOfficeSelector';
 import { DateRangeDropdown, type TimeRange } from '@/components/DateRangeDropdown';
 import BookingCard from '@/components/BookingCard';
 import CancelBookingModal from '@/components/CancelBookingModal';
-import type { Booking, Office } from '@/types/api';
+import type { Booking } from '@/types/api';
 import '@/styles/bookingspage.css';
 import { EmptyBookingsState } from '@/components/EmptyBookingsState';
-
-interface BookingsPageProps {
-  offices?: Office[];
-  bookings?: Booking[];
-  onCancelBooking: (bookingId: string) => Promise<void>;
-}
+import { BookingCardSkeleton } from '@/components/BookingCardSkeleton';
+import { useUserBookings, type BookingScope } from '@/hooks/useUserBookings';
+import useCancelBooking from '@/hooks/useCancelBooking';
 
 type TabType = 'active' | 'past';
 
-export default function BookingsPage({ offices = [], bookings = [], onCancelBooking }: BookingsPageProps) {
+export default function BookingsPage() {
   const [activeTab, setActiveTab] = useState<TabType>('active');
   const [selectedOfficeId, setSelectedOfficeId] = useState<string>('all');
   const [selectedRange, setSelectedRange] = useState<TimeRange>('all');
   
   // Состояние для модалки отмены
   const [bookingToCancel, setBookingToCancel] = useState<Booking | null>(null);
-  const [isCanceling, setIsCanceling] = useState(false);
+
+  const scope: BookingScope = activeTab === 'active' ? 'upcoming' : 'past'
+  const apiOfficeId = selectedOfficeId === 'all' ? undefined : selectedOfficeId
+
+  const { data: bookings = [], isLoading, isError, refetch} = useUserBookings({scope, officeId: apiOfficeId})
+
+  const { mutateAsync: cancelBooking, isPending: isCanceling} = useCancelBooking()
 
   // Фильтрация бронирований по табу, офису и временному диапазону
   const filteredBookings = useMemo(() => {
+    if (!Array.isArray(bookings)) return []
+    if (selectedRange === 'all') return bookings
+    
     const now = new Date();
 
     return bookings.filter((booking) => {
+      if (!booking?.startsAt) return false;
       const startDate = new Date(booking.startsAt);
-      
-      // 1. Фильтр по табу (Активные / Прошедшие)
-      const isPast = startDate < now;
-      if (activeTab === 'active' && isPast) return false;
-      if (activeTab === 'past' && !isPast) return false;
+      console.log(booking.id)
 
-      // 2. Фильтр по офису
-      if (selectedOfficeId !== 'all') {
-        const officeId = booking.office?.id || booking.room?.office?.id;
-        if (officeId !== selectedOfficeId) return false;
+      if (selectedRange === 'today') {
+        return startDate.toDateString() === now.toDateString();
+      }
+      
+      if (selectedRange === 'week') {
+        if (activeTab === 'active') {
+          // Для предстоящих: от текущего момента до +7 дней вперед
+          const endOfWeek = new Date(now);
+          endOfWeek.setDate(now.getDate() + 7);
+          return startDate >= now && startDate <= endOfWeek;
+        } else {
+          // Для прошедших: за последние 7 дней
+          const startOfWeek = new Date(now);
+          startOfWeek.setDate(now.getDate() - 7);
+          return startDate >= startOfWeek && startDate <= now;
+        }
       }
 
-      // 3. Фильтр по дате
-      if (selectedRange === 'today') {
-        const isToday = startDate.toDateString() === now.toDateString();
-        if (!isToday) return false;
-      } else if (selectedRange === 'week') {
-        const weekAgo = new Date(now);
-        weekAgo.setDate(now.getDate() - 7);
-        if (startDate < weekAgo || startDate > now) return false;
-      } else if (selectedRange === 'month') {
-        const monthAgo = new Date(now);
-        monthAgo.setMonth(now.getMonth() - 1);
-        if (startDate < monthAgo || startDate > now) return false;
+      if (selectedRange === 'month') {
+        if (activeTab === 'active') {
+          // Для предстоящих: от текущего момента до +1 месяца вперед
+          const endOfMonth = new Date(now);
+          endOfMonth.setMonth(now.getMonth() + 1);
+          return startDate >= now && startDate <= endOfMonth;
+        } else {
+          // Для прошедших: за последний 1 месяц
+          const startOfMonth = new Date(now);
+          startOfMonth.setMonth(now.getMonth() - 1);
+          return startDate >= startOfMonth && startDate <= now;
+        }
       }
 
       return true;
     });
-  }, [bookings, activeTab, selectedOfficeId, selectedRange]);
+  }, [bookings, selectedRange]);
 
   const handleConfirmCancel = async () => {
     if (!bookingToCancel) return;
     try {
-      setIsCanceling(true);
-      await onCancelBooking(bookingToCancel.id);
-      setBookingToCancel(null);
+      await cancelBooking(bookingToCancel.id)
+      setBookingToCancel(null)
     } catch (error) {
       console.error('Ошибка отмены бронирования:', error);
-    } finally {
-      setIsCanceling(false);
     }
   };
 
@@ -80,7 +92,6 @@ export default function BookingsPage({ offices = [], bookings = [], onCancelBook
         <h1 className="bookings-page-title">Мои бронирования</h1>
         <div className="bookings-page-filters">
           <BookingOfficeSelector
-            offices={offices}
             selectedOfficeId={selectedOfficeId}
             onSelect={setSelectedOfficeId}
           />
@@ -111,7 +122,11 @@ export default function BookingsPage({ offices = [], bookings = [], onCancelBook
 
       {/* Список бронирований */}
       <div className="bookings-list">
-        {filteredBookings.length > 0 ? (
+        {isLoading ? (
+            <BookingCardSkeleton count={3} />
+        ) : isError ? (
+            <div></div>
+        ) : filteredBookings.length > 0 ? (
           filteredBookings.map((booking) => (
             <BookingCard
               key={booking.id}
