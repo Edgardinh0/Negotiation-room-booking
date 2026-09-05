@@ -1,20 +1,64 @@
+import { useRoomBookings } from '@/hooks/useRoomBookings';
 import { LuUsers, LuClock } from 'react-icons/lu';
 import type { Room } from '@/types/api';
 import '@/styles/roomcard.css';
+import { endOfDay, isBefore, parseISO, startOfDay } from 'date-fns';
 
 interface RoomCardProps {
   room: Room;
-  available?: boolean;
-  statusText?: string;
+  from?: string,
+  to?: string,
   onDetailClick?: (id: string) => void;
   onBookClick?: (id: string) => void;
 }
 
-export function RoomCard({ room, statusText = 'Свободна весь день', onDetailClick, onBookClick }: RoomCardProps) {
-    
-    const status = room.statusText ?? statusText
+export function RoomCard({ room, from, to, onDetailClick, onBookClick }: RoomCardProps) {
+  const now = new Date()
+
+  const filterStart = from ? parseISO(from) : now
+  const filterEnd = to ? parseISO(to) : new Date(filterStart.getTime() + 60 * 60 * 1000) 
+
+  //Границы текущих суток
+  const dayStartIso = startOfDay(filterStart).toISOString()
+  const dayEndIso = endOfDay(filterStart).toISOString()
+
+  const { data: slots = []} = useRoomBookings({
+    roomId: room.id,
+    from: dayStartIso,
+    to: dayEndIso
+  })
+
+  //Прошла ли дата из фильтра 
+  const isPastTime = isBefore(filterStart, now)
+
+  //Форматируем время фильтра в HH:mm для сравнения со слотами
+  const filterStartHHMM = filterStart ? `${String(filterStart.getHours()).padStart(2, '0')}:${String(filterStart.getMinutes()).padStart(2, '0')}` : null
+  const filterEndHHMM = filterEnd ? `${String(filterEnd.getHours()).padStart(2, '0')}:${String(filterEnd.getMinutes()).padStart(2, '0')}` : null
+
+  //Ищем пересечение интервалов и слотов
+  const conflictSlot = slots.find((slot) => {
+    if (!filterStartHHMM || !filterEndHHMM) return false
+    return filterStartHHMM < slot.endTime && filterEndHHMM > slot.startTime
+  })
+
+  const isAvailable = !isPastTime && !conflictSlot
+
+
+  //Формируем текст статуса
+  let statusText = 'Доступна весь день'
+
+  if (isPastTime) {
+    statusText = 'Указанное время прошло'
+  } else if (conflictSlot) {
+    statusText = `Занята до ${conflictSlot.endTime}`
+  } else if (filterStartHHMM) {
+    const nextSlot = [...slots].filter((s) => s.startTime >= filterStartHHMM).sort((a,b) => a.startTime.localeCompare(b.startTime))[0]
+    if (nextSlot) {
+      statusText = `Доступна до ${nextSlot.startTime}`
+    }
+  }
   
-    return (
+  return (
     <div className="room-card">
       <div className="room-card-header">
         <h3 className="room-title">{room.name}</h3>
@@ -28,13 +72,13 @@ export function RoomCard({ room, statusText = 'Свободна весь ден�
         </div>
         <div className="info-item">
           <LuClock className="info-icon" />
-          <span>{status}</span>
+          <span>{statusText}</span>
         </div>
       </div>
 
-      <div className={`status-badge ${room.available ? 'available' : 'unavailable'}`}>
+      <div className={`status-badge ${isAvailable ? 'available' : 'unavailable'}`}>
         <span className="status-dot" />
-        {room.available ? 'Доступно на выбранное время' : 'Недоступно на выбранное время'}
+        {isAvailable ? 'Доступно на выбранное время' : 'Недоступно на выбранное время'}
       </div>
 
       <div className="room-card-actions">
@@ -48,7 +92,7 @@ export function RoomCard({ room, statusText = 'Свободна весь ден�
         <button
           type="button"
           className="btn-primary"
-          disabled={!room.available}
+          disabled={!isAvailable}
           onClick={() => onBookClick?.(room.id)}
         >
           Забронировать

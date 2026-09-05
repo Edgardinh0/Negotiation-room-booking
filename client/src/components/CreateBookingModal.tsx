@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { format, addMinutes, isBefore, startOfDay } from "date-fns";
+import React, { useEffect, useState } from "react";
+import { format, addMinutes, isBefore, startOfDay, parseISO, differenceInMinutes } from "date-fns";
 import { ru } from "date-fns/locale/ru";
 import DatePicker, { registerLocale } from "react-datepicker";
 import { LuInfo } from "react-icons/lu";
@@ -18,6 +18,8 @@ interface CreateBookingModalProps {
   isOpen: boolean;
   onClose: () => void;
   defaultDate?: Date;
+  from?: string //Время начала бронирования
+  to?: string //Время конца бронирования
 }
 
 const DURATION_OPTIONS = [
@@ -35,12 +37,14 @@ export function CreateBookingModal({
   isOpen,
   onClose,
   defaultDate = new Date(),
+  from,
+  to
 }: CreateBookingModalProps) {
   const queryClient = useQueryClient();
 
   const [title, setTitle] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date>(defaultDate);
-  const [startTime, setStartTime] = useState("15:00");
+  const [startTime, setStartTime] = useState('15:00');
   const [duration, setDuration] = useState(60);
   const [comment, setComment] = useState("");
 
@@ -50,6 +54,27 @@ export function CreateBookingModal({
     time?: string;
     submit?: string;
   }>({});
+
+  useEffect(() => {
+    if (from) {
+      const startDate = parseISO(from)
+      setSelectedDate(startDate);
+      setStartTime(format(startDate, "HH:mm"))
+
+      if (to) {
+        const endDate = parseISO(to)
+        const diff = differenceInMinutes(endDate, startDate);
+          if (diff > 0) {
+            setDuration(diff);
+        }
+      }
+    } else {
+      setSelectedDate(defaultDate);
+      setStartTime(format(defaultDate, "HH:mm"));
+    }
+  }, [from, to, isOpen])
+
+  if (!isOpen) return null
 
   // Мутация отправки бронирования
   const mutation = useMutation({
@@ -69,8 +94,6 @@ export function CreateBookingModal({
       setErrors((prev) => ({ ...prev, submit: message }));
     },
   });
-
-  if (!isOpen) return null;
 
   const resetForm = () => {
     setTitle("");

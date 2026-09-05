@@ -10,7 +10,9 @@ import { ErrorState } from "@/components/ErrorState";
 import { useOffices } from "@/hooks/useOffices";
 import { useRooms } from "@/hooks/useRooms";
 import type { FilterState } from "@/components/RoomsFilters";
+import type { Room } from "@/types/api";
 import '@/styles/roomspage.css';
+import { CreateBookingModal } from "@/components/CreateBookingModal";
 
 function RoomsPage() {
   const [selectedOfficeId, setSelectedOfficeId] = useState<string>('');
@@ -18,11 +20,13 @@ function RoomsPage() {
   const [from, setFrom] = useState<string | undefined>();
   const [to, setTo] = useState<string | undefined>();
 
+  const  [selectedRoomForBooking, setSelectedRoomForBooking] = useState<Room | null>(null)
+
   const isOfficeSelected = Boolean(selectedOfficeId);
 
-  const navigate = useNavigate()
-
   const [filtersKey, setFiltersKey] = useState<number>(0)
+
+  const navigate = useNavigate()
 
   // 1. Загрузка офисов
   const { data: offices = [] } = useOffices();
@@ -125,7 +129,9 @@ function RoomsPage() {
                 <RoomCard
                   key={room.id}
                   room={room}
-                  onBookClick={(id) => console.log('Book room:', id)}
+                  from={from}
+                  to={to}
+                  onBookClick={() => setSelectedRoomForBooking(room)}
                   onDetailClick={(id) => handleDeatilsClick(id)}
                 />
               ))}
@@ -133,6 +139,18 @@ function RoomsPage() {
           </div>
         )}
       </div>
+
+      {/* Модальное окно создания бронирования */}
+      {selectedRoomForBooking && (
+        <CreateBookingModal 
+          room={selectedRoomForBooking}
+          isOpen={Boolean(selectedRoomForBooking)}
+          onClose={() => setSelectedRoomForBooking(null)}
+          defaultDate={from ? new Date(from) : new Date()}
+          from={from}
+          to={to}
+        />
+      )}
     </div>
   );
 }

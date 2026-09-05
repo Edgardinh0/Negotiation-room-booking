@@ -112,7 +112,7 @@ function RoomDetailsPage() {
           )}
         </main>
 
-        {room && (
+        {isModalOpen && room && (
             <CreateBookingModal
                 room={room}
                 isOpen={isModalOpen}

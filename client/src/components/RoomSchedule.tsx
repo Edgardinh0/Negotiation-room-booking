@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 import { LuCalendar as CalendarIcon } from "react-icons/lu";
 import DatePicker, { registerLocale } from "react-datepicker";
 import { ru } from "date-fns/locale/ru";
