@@ -38,7 +38,7 @@
 git clone https://github.com/talense-tasks/frontend-trainee-assignment-autumn-2026-flow-2-edgardinh0-5535b380/tree/main
 
 # Перейдите в папку проекта
-cd room-booking-app
+cd frontend-trainee-assignment-autumn-2026-flow-2-edgardinh0-5535b380/client
 
 # Установите зависимости
 npm install
@@ -48,3 +48,35 @@ npm install
 ```bash 
 
 npm run dev
+```
+
+### 3. Юнит-тесты
+```bash
+# Перейдите в папку tests
+cd client/src/tests
+# Запуск одного из тестов
+npx vitest {Имя файла}
+# Запуск всех тестов сразу
+npx vitest run
+```
+
+### 4. Структура проекта
+src/
+├── api/                  # Настройка API-клиента и асинхронных запросов
+├── components/           # UI-компоненты (RoomCard, RoomSchedule, ErrorState, и др.)
+├── hooks/                # Кастомные React-хуки (useRooms, useRoomDetails, useRoomBookings)
+├── pages/                # Страницы приложения (RoomsPage, RoomDetailsPage, NotFoundPage)
+│   ├── RoomsPage.tsx
+│   ├── BookingsPage.tsx
+│   ├── RoomDetailsPage.tsx
+│   ├── NotFoundPage.tsx
+├── routes/               # Файл с react-router
+├── tests/                # Тесты страниц
+│   ├── RoomsPage.test.tsx
+│   ├── BookingsPage.test.tsx
+│   ├── RoomDetailsPage.test.tsx
+│   ├── NotFoundPage.test.tsx
+├── types/                # Кастомные типы
+├── styles/               # CSS-стили страниц и компонентов
+├── App.tsx               # Корневой компонент с настроенным Router и QueryClient
+└── main.tsx              # Точка входа в приложение
