@@ -1,0 +1,81 @@
+.booking-office-select-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.booking-office-select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  
+  /* Сброс дефолтов button */
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+  box-sizing: border-box;
+  font-family: inherit;
+
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+  min-width: 150px;
+  transition: border-color 0.2s ease;
+}
+
+.booking-office-select-trigger:hover {
+  border-color: #d1d5db;
+}
+
+.booking-office-select-trigger.placeholder {
+  color: #6b7280;
+}
+
+.booking-office-select-icon {
+  font-size: 16px;
+  color: #6b7280;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.booking-office-select-icon.open {
+  transform: rotate(180deg);
+}
+
+.booking-office-select-options {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 100%;
+  width: max-content;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  z-index: 50;
+}
+
+.booking-office-option-item {
+  padding: 8px 14px;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.booking-office-option-item:hover {
+  background-color: #f3f4f6;
+}
+
+.booking-office-option-item.active {
+  background-color: #e6f7f5;
+  color: #00b29a;
+  font-weight: 500;
+}

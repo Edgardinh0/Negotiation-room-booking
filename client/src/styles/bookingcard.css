@@ -1,0 +1,87 @@
+.booking-card-wrapper {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px 24px;
+  border: 1px solid #f3f4f6;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.booking-card-wrapper.past {
+  opacity: 0.8;
+}
+
+.booking-card-date-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 64px;
+  background: #f9fafb;
+  border-radius: 8px;
+  margin-right: 20px;
+  flex-shrink: 0;
+}
+
+.booking-card-month-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.booking-card-day-number {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.1;
+}
+
+.booking-card-details-content {
+  flex: 1;
+}
+
+.booking-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 6px 0;
+}
+
+.booking-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.booking-card-dot {
+  color: #d1d5db;
+}
+
+.booking-card-actions {
+  margin-left: auto;
+}
+
+.booking-card-btn-cancel {
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+  background: transparent;
+  border: 1px solid #fca5a5;
+  color: #ef4444;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.booking-card-btn-cancel:hover {
+  background: #fef2f2;
+}
