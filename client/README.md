@@ -61,6 +61,7 @@ npx vitest run
 ```
 
 ### 4. Структура проекта
+```bash
 src/
 ├── api/                  # Настройка API-клиента и асинхронных запросов
 ├── components/           # UI-компоненты (RoomCard, RoomSchedule, ErrorState, и др.)
