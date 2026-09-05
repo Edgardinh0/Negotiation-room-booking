@@ -20,7 +20,10 @@ export const useWebSocket = () => {
                 const data = JSON.parse(event.data)
                 console.log('WS: ', data)
 
-                queryClient.invalidateQueries()
+                queryClient.invalidateQueries({queryKey: ['rooms']})
+                queryClient.invalidateQueries({queryKey: ['bookings']})
+                queryClient.invalidateQueries({queryKey: ['roomBookings']})
+                queryClient.invalidateQueries({queryKey: ['rooms']})
             } catch (err) {
                 console.log('Error: ', err)
             }

@@ -14,7 +14,9 @@ import type { Room } from "@/types/api";
 import '@/styles/roomspage.css';
 import { CreateBookingModal } from "@/components/CreateBookingModal";
 
+
 function RoomsPage() {
+  
   const [selectedOfficeId, setSelectedOfficeId] = useState<string>('');
   const [minCapacity, setMinCapacity] = useState<number | undefined>(4);
   const [from, setFrom] = useState<string | undefined>();

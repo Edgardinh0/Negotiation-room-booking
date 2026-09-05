@@ -15,6 +15,7 @@ import "@/styles/roomdetail.css";
 
 
 function RoomDetailsPage() {
+
   const { roomId } = useParams<{ roomId: string }>();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [isModalOpen, setIsModalOpen] = useState(false)
