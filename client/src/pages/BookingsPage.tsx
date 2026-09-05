@@ -9,6 +9,7 @@ import { EmptyBookingsState } from '@/components/EmptyBookingsState';
 import { BookingCardSkeleton } from '@/components/BookingCardSkeleton';
 import { useUserBookings, type BookingScope } from '@/hooks/useUserBookings';
 import useCancelBooking from '@/hooks/useCancelBooking';
+import { ErrorState } from '@/components/ErrorState';
 
 type TabType = 'active' | 'past';
 
@@ -23,7 +24,7 @@ export default function BookingsPage() {
   const scope: BookingScope = activeTab === 'active' ? 'upcoming' : 'past'
   const apiOfficeId = selectedOfficeId === 'all' ? undefined : selectedOfficeId
 
-  const { data: bookings = [], isLoading, isError, refetch} = useUserBookings({scope, officeId: apiOfficeId})
+  const { data: bookings = [], isLoading, isError, refetch: refetchBookings} = useUserBookings({scope, officeId: apiOfficeId})
 
   const { mutateAsync: cancelBooking, isPending: isCanceling} = useCancelBooking()
 
@@ -125,7 +126,11 @@ export default function BookingsPage() {
         {isLoading ? (
             <BookingCardSkeleton count={3} />
         ) : isError ? (
-            <div></div>
+            <ErrorState 
+                onRetry={() => refetchBookings()}
+                title='Не удалось загрузить данные'  
+                description='Произошла ошибка при загрузке ваших бронирований'  
+            />
         ) : filteredBookings.length > 0 ? (
           filteredBookings.map((booking) => (
             <BookingCard

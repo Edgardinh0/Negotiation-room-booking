@@ -29,7 +29,7 @@ function RoomsPage() {
   const navigate = useNavigate()
 
   // 1. Загрузка офисов
-  const { data: offices = [] } = useOffices();
+  const { data: offices = [], isError: isOfficeError } = useOffices();
 
   // 2. Загрузка комнат (выполняется только при наличии selectedOfficeId)
   const {
@@ -97,11 +97,15 @@ function RoomsPage() {
 
       <div className="main-content">
         {/* 1. Офис не выбран */}
-        {!isOfficeSelected && <NoOfficeSelected />}
+        {!isOfficeSelected && !isOfficeError && <NoOfficeSelected />}
 
         {/* 2. Ошибка API */}
-        {isOfficeSelected && isRoomsError && (
-          <ErrorState onRetry={() => refetchRooms()} />
+        {(isOfficeError || isRoomsError) && (
+          <ErrorState 
+            onRetry={() => refetchRooms()} 
+            title='Не удалось загрузить данные'
+            description="Произошла ошибка при загрузке списка переговорных"
+          />
         )}
 
         {/* 3. Идет загрузка списка комнат */}

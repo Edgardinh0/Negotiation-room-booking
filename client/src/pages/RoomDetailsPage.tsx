@@ -8,10 +8,11 @@ import { useRoomBookings } from "@/hooks/useRoomBookings";
 import RoomDetailCard from "@/components/RoomDetailCard";
 import { RoomSchedule } from "@/components/RoomSchedule";
 import { RoomDetailSkeleton } from "@/components/RoomDetailSkeleton";
-import { ScheduleErrorState } from "@/components/ScheduleErrorState";
 import { CreateBookingModal } from "@/components/CreateBookingModal";
+import { ErrorState } from "@/components/ErrorState";
 
 import "@/styles/roomdetail.css";
+
 
 function RoomDetailsPage() {
   const { roomId } = useParams<{ roomId: string }>();
@@ -64,7 +65,7 @@ function RoomDetailsPage() {
     return (
       <div className="room-detail-page">
         <div className="room-detail-container">
-          <ScheduleErrorState
+          <ErrorState
             title="Не удалось загрузить данные о комнате"
             description="Произошла ошибка при загрузке информации о переговорной"
             onRetry={() => refetchRoom()}
@@ -92,7 +93,7 @@ function RoomDetailsPage() {
 
         <main className="room-main">
           {isBookingsError ? (
-            <ScheduleErrorState
+            <ErrorState
               title="Не удалось загрузить расписание"
               description="Произошла ошибка при загрузке расписания переговорной"
               onRetry={() => refetchBookings()}

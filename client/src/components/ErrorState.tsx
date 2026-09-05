@@ -3,17 +3,19 @@ import '@/styles/errorstate.css';
 
 interface ErrorStateProps {
   onRetry?: () => void;
+  title: string,
+  description: string
 }
 
-export function ErrorState({ onRetry }: ErrorStateProps) {
+export function ErrorState({ onRetry, title, description }: ErrorStateProps) {
   return (
     <div className="error-state-container">
       <div className="error-icon-circle">
         <LuTriangle className="error-icon" />
       </div>
-      <h3 className="error-title">Не удалось загрузить данные</h3>
+      <h3 className="error-title">{title}</h3>
       <p className="error-subtitle">
-        Произошла ошибка при загрузке списка переговорных
+        {description}
       </p>
       <button type="button" className="btn-retry" onClick={onRetry}>
         Попробовать снова
