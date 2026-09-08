@@ -31,7 +31,7 @@ export function useRoomBookings({
     },
     // Включаем запрос только если есть все три параметра
     enabled: Boolean(roomId && from && to),
-    staleTime: 1000 * 60 * 2, // 2 минуты
+    staleTime: 0,
     select: (bookings: Booking[]): BookingSlot[] => {
       return bookings.map((item) => ({
         id: item.id,

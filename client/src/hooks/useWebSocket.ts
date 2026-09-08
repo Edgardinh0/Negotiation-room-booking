@@ -21,9 +21,9 @@ export const useWebSocket = () => {
                 console.log('WS: ', data)
 
                 queryClient.invalidateQueries({queryKey: ['rooms']})
-                queryClient.invalidateQueries({queryKey: ['bookings']})
                 queryClient.invalidateQueries({queryKey: ['roomBookings']})
-                queryClient.invalidateQueries({queryKey: ['rooms']})
+                queryClient.invalidateQueries({queryKey: ['room']})
+                queryClient.invalidateQueries({queryKey: ['userBookings']})
             } catch (err) {
                 console.log('Error: ', err)
             }
