@@ -35,10 +35,10 @@
 ### 1. Клонирование репозитория и установка зависимостей
 ```bash
 # Клонируйте репозиторий
-git clone https://github.com/talense-tasks/frontend-trainee-assignment-autumn-2026-flow-2-edgardinh0-5535b380/tree/main
+git clone https://github.com/Negotiation-room-booking
 
 # Перейдите в папку проекта
-cd frontend-trainee-assignment-autumn-2026-flow-2-edgardinh0-5535b380/client
+cd Negotiation-room-booking/client
 
 # Установите зависимости
 npm install
@@ -53,7 +53,7 @@ npm run dev
 ### 3. Юнит-тесты
 ```bash
 # Перейдите в папку tests
-cd client/src/tests
+cd src/tests
 # Запуск одного из тестов
 npx vitest {Имя файла}
 # Запуск всех тестов сразу
